@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const target = event.target;
         if (target && target.classList.contains('tabheader__item')){
             tabs.forEach((item, i) => {
-                if(target == item){
+                if(target === item){
                     hideTabsContent(tabsContent, tabs, tabcontent);
                     showTabsContent(tabsContent, tabs, tabcontent, i);
                 }
@@ -175,36 +175,22 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    new MenuCard(
-        'img/tabs/vegy.jpg',
-        'vegy',
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        9,
-        '.menu .container',
-        'menu__item'
-    ).render();
+    const getResources = async (url) => {
+        const result = await fetch(url);
 
-    new MenuCard(
-        'img/tabs/elite.jpg',
-        'elite',
-        'Меню "Премиум"',
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        14,
-        '.menu .container',
-        'menu__item',
-        'big'
-    ).render();
+        if(!result.ok){
+           throw new Error(`Could not fetch ${url}, status: ${result.status}`);
+        }
 
-    new MenuCard(
-        'img/tabs/post.jpg',
-        'post',
-        'Меню "Постное"',
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        21,
-        '.menu .container',
-        'menu__item'
-    ).render();
+        return await result.json();
+    }
+
+    getResources('http://localhost:3333/menu')
+        .then(data => {
+            data.forEach(({img, altimg, title, descr, price}) => {
+                new MenuCard(img, altimg, title, descr, price, '.menu .container', 'menu__item', 'menu__card').render();
+            });
+        });
 
     //forms
 
@@ -217,10 +203,22 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     forms.forEach(item => {
-        postData(item);
-    })
+        bindpostData(item);
+    });
 
-    function postData (form) {
+    const postData = async (url, data) => {
+        const result = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+            body: data
+        });
+
+        return await result.json();
+    }
+
+    function bindpostData (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -234,18 +232,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData(form);
 
-            const object = {};
-            formData.forEach(function(value, key){
-                object[key] = value;
-            });
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-            fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-                body: JSON.stringify(object),
-            })
+                postData('http://localhost:3333/requests', json)
                 .then((response) => {
                     console.log(response);
                     showThanksModal(message.success);
@@ -282,4 +271,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     hideModal();
                 }, 4000);
             }
+
+            fetch('http://localhost:3333/menu')
+                .then(data => data.json())
+                .then(res => console.log(res))
         });

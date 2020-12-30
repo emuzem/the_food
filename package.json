@@ -1,0 +1,23 @@
+{
+  "name": "food_dist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emuzem/the_food.git"
+  },
+  "author": "emuzem",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emuzem/the_food/issues"
+  },
+  "homepage": "https://github.com/emuzem/the_food#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "json-server": "^0.16.3"
+  }
+}
