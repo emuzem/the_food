@@ -6,10 +6,10 @@ window.addEventListener('DOMContentLoaded', () => {
     tabcontent = document.querySelectorAll('.tabcontent');
 
     function hideTabsContent(content, tabs, slides) {
-        content.forEach(item => {
-            item.classList.add('hide');
-            item.classList.remove('show', 'fade');
-        });
+        // content.forEach(item => {
+        //     item.classList.add('hide');
+        //     item.classList.remove('show', 'fade');
+        // });
         tabs.forEach(item => {
             item.classList.remove('tabheader__item_active');
         });
@@ -185,22 +185,22 @@ window.addEventListener('DOMContentLoaded', () => {
         return await result.json();
     }
 
-    getResources('http://localhost:3333/menu')
+    /*getResources('http://localhost:3333/menu')
         .then(data => {
             data.forEach(({img, altimg, title, descr, price}) => {
                 new MenuCard(img, altimg, title, descr, price, '.menu .container', 'menu__item', 'menu__card').render();
             });
+        });*/
+
+    axios.get('http://localhost:3000/menu').then(data => {
+        data.data.forEach(({img, altimg, title, descr, price}) => {
+            new MenuCard(img, altimg, title, descr, price, '.menu .container', 'menu__item', 'menu__card').render();
         });
+    })
 
     //forms
 
-    const forms = document.querySelectorAll('form');
-
-    const message = {
-        loading: 'img/form/spinner.svg',
-        success: "success, we'll write back soon",
-        fail: "something went wrong"
-    }
+    const forms = document.querySelector('#form');
 
     forms.forEach(item => {
         bindpostData(item);
@@ -234,7 +234,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-                postData('http://localhost:3333/requests', json)
+                postData('http://localhost:3000/requests', json)
                 .then((response) => {
                     console.log(response);
                     showThanksModal(message.success);
@@ -272,7 +272,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }, 4000);
             }
 
-            fetch('http://localhost:3333/menu')
+            fetch('http://localhost:3000/menu')
                 .then(data => data.json())
                 .then(res => console.log(res))
         });
