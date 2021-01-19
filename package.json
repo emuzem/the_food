@@ -18,6 +18,8 @@
   "homepage": "https://github.com/emuzem/the_food#readme",
   "dependencies": {},
   "devDependencies": {
-    "json-server": "^0.16.3"
+    "json-server": "^0.16.3",
+    "webpack": "^5.15.0",
+    "webpack-cli": "^4.3.1"
   }
 }
